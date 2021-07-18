@@ -1,0 +1,48 @@
+import yfinance as yf
+import numpy as np
+
+tickers=['amzn','^gspc']
+data= yf.download(tickers,start='2015-01-01',end='2020-01-30')['Adj Close']
+
+
+#In order to calculate beta= cov(stock,market)/var(market)
+#find covariance between stock and market
+logreturn= np.log(data/data.shift(1)) 
+cov= logreturn.cov()*250 #find annual covariance matrix
+print('Covariance matrix','\n',cov)
+#use function iloc to make covariance as float number
+cov_market=cov.iloc[0,1]
+print('Covariance with Market=',cov_market)
+
+#find variance of S&P500
+var= logreturn['^GSPC'].var()*250
+print('Variance of S&P500=',var)
+
+#beta of AMZN and the market
+beta= (cov_market/var)
+print('AMZN beta with market=',beta)
+#Analysis = Amzn has beta = 1.32 which mean AMZN is agressive with market. When market is up
+#AMZN has better return in the same time if market is going down AMZN has worst return compare to market
+
+tickers=['wmt','^gspc']
+data= yf.download(tickers,start='2015-01-01',end='2020-01-30')['Adj Close']
+
+#In order to calculate beta= cov(stock,market)/var(market)
+#find covariance between stock and market
+logreturn= np.log(data/data.shift(1)) 
+cov= logreturn.cov()*250 #find annual covariance matrix
+print('Covariance matrix','\n',cov)
+#use function iloc to make covariance as float number
+cov_market=cov.iloc[0,1]
+print('Covariance with Market=',cov_market)
+
+#find variance of S&P500
+var= logreturn['^GSPC'].var()*250
+print('Variance of S&P500=',var)
+
+#beta of AMZN and the market
+beta= (cov_market/var)
+print('WMT beta with market=',beta)
+#Analysis= Walmart has beta at 0.62 which <1 it is mean walmart has defensive with market
+#when market move up walmart generate lower return compare to overall market. In the same time
+#when market going down Walmart lose less than S&P500 
