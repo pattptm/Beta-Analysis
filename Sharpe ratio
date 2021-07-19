@@ -1,0 +1,38 @@
+#Sharpe ratio = to measure risk and return to make decision 
+#Sharpe ratio= expectedrt-rf/(std)
+#which stock we should invest
+
+import yfinance as yf
+import numpy as np
+
+#Downloading Data from yahoo finance
+tickers=['amzn','^gspc']
+data= yf.download(tickers,start='2015-01-01',end='2020-12-30')['Adj Close']
+
+#Define variable logreturn,rm,rf
+logreturn=np.log(data/data.shift(1))
+rm=logreturn['^GSPC'].mean()*250
+rf = 0.025 #assume risk free rate = 10-year treasury bond =2.5%
+
+#Calculate beta= cov(amzn,s&P500)/var(S&P500)
+cov=logreturn.cov()*250 #annual covariance metrix
+#choose covariance amzn and S&P500
+cov_market=cov.iloc[0,1]
+print('Covariance AMZN with S&P500=',cov_market)
+var=logreturn['^GSPC'].var()*250
+print('Variance of S&P500=',var)
+beta=cov_market/var
+print('Beta=',beta)
+
+#Calculate Expected return when thinking about investing in AMZN stock by using
+# past 5 years return
+expectedrt=rf+beta*(rm-rf)
+print('Expected Return',expectedrt)
+
+#find standardeviation of amzn
+std=logreturn['AMZN'].std()*250**0.5
+print('Stadardeviation of AMZN=',std)
+
+#Calculate Sharpe ratio to compare different stock in portfolio
+sharperatio= (expectedrt-rf)/std
+print('Sharpe Ratio=',sharperatio)
